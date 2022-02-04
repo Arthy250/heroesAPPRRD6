@@ -1,7 +1,24 @@
-import React from 'react';
-import { Link, NavLink } from 'react-router-dom';
+import React, { useContext } from 'react';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
+import { AuthContext } from '../../auth/authContext';
+import { types } from '../../types/types';
 
 export const Navbar = () => {
+
+    const {user, dispatch} = useContext(AuthContext);
+    const nombreUsuario = user.name;
+    
+    const navigate = useNavigate();
+
+    const handleLogOut = () => {
+        const actionLogout = {
+            type: types.logout
+        }
+        dispatch(actionLogout);
+
+        navigate('/login', {replace:true});
+    }
+
     return (
         <nav className="navbar navbar-expand-sm navbar-dark bg-dark">
             
@@ -30,18 +47,29 @@ export const Navbar = () => {
                     >
                         DC
                     </NavLink>
+
+                    <NavLink 
+                        className={(navData) => navData.isActive ? "active" : "" }
+                        className="nav-item nav-link" 
+                        to="/search"
+                    >
+                        Search
+                    </NavLink>
                 </div>
             </div>
 
             <div className="navbar-collapse collapse w-100 order-3 dual-collapse2">
                 <ul className="navbar-nav ml-auto">
-                    <NavLink 
+
+                    <span className='nav-item nav-link text-info'>{nombreUsuario}</span>
+
+                    <button 
                         className={(navData) => navData.isActive ? "active" : "" }
-                        className="nav-item nav-link" 
-                        to="/login"
+                        className="nav-item nav-link btn"
+                        onClick={handleLogOut}
                     >
                         Logout
-                    </NavLink>
+                    </button>
                 </ul>
             </div>
         </nav>
